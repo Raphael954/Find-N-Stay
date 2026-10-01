@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f9fa" />
+    <meta name="description" content="Discover verified homes and rental properties with Find N' Stay." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <title><%= title %></title>
+  </head>
+  <body id="top">
+    <header class="site-header">
+      <div class="header-inner">
+        <button class="icon-button menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-navigation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <a class="brand" href="#top" aria-label="Find N' Stay home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="m4 14 12-10 12 10v13H6V14" /><path d="M13 27v-9h6v9M4 14h24" /></svg>
+          </span>
+          <span>Find <span class="brand-amp">N'</span> Stay</span>
+        </a>
+        <nav class="main-navigation" id="site-navigation" aria-label="Main navigation">
+          <a class="nav-link active" href="#top">Find a home</a>
+          <a class="nav-link" href="#properties">Properties</a>
+          <a class="nav-link" href="#about">About us</a>
+        </nav>
+        <div class="header-actions">
+          <a class="host-link" href="#account">List your property</a>
+          <a class="account-button" href="#account" aria-label="Guest account">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.1-5.5 7-5.5s6.4 1.9 7 5.5"/></svg>
+            <span>Guest</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="search-section" aria-label="Search homes">
+        <form class="search-bar" action="/" method="get">
+          <label class="search-field location-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg></span>
+            <span class="field-content"><span class="field-label">Location</span><input type="search" name="location" placeholder="City, area or address" value="<%= filters.location %>" /></span>
+          </label>
+          <label class="search-field type-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-5 8 5v12M2 20h20M9 20v-6h6v6"/></svg></span>
+            <span class="field-content"><span class="field-label">Property type</span>
+              <select name="propertyType">
+                <option value="">Any type</option>
+                <% ["apartment", "house", "duplex", "studio", "office", "shop", "warehouse"].forEach((type) => { %>
+                  <option value="<%= type %>" <%= filters.propertyType === type ? "selected" : "" %>><%= type.charAt(0).toUpperCase() + type.slice(1) %></option>
+                <% }) %>
+              </select>
+            </span>
+          </label>
+          <label class="search-field price-field">
+            <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18m5-14.5c-.8-1-2.1-1.5-4-1.5h-2a3 3 0 0 0 0 6h2a3 3 0 0 1 0 6h-2c-1.9 0-3.2-.5-4-1.5"/></svg></span>
+            <span class="field-content"><span class="field-label">Annual budget</span>
+              <select name="maxPrice">
+                <option value="">Any budget</option>
+                <option value="2000000" <%= Number(filters.maxPrice) === 2000000 ? "selected" : "" %>>Up to ₦2m</option>
+                <option value="3000000" <%= Number(filters.maxPrice) === 3000000 ? "selected" : "" %>>Up to ₦3m</option>
+                <option value="5000000" <%= Number(filters.maxPrice) === 5000000 ? "selected" : "" %>>Up to ₦5m</option>
+              </select>
+            </span>
+          </label>
+          <button class="search-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+            <span>Search homes</span>
+          </button>
+        </form>
+      </section>
+
+      <section class="hero section-wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="eyebrow-line"></span> A better way to find home</span>
+          <h1 id="hero-title">Room for the life<br />you're <span>building.</span></h1>
+          <p>Thoughtfully chosen homes, clear details, and a smoother way to find your next place in Nigeria.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#properties">Explore homes <span aria-hidden="true">↗</span></a>
+            <span class="hero-note"><span class="note-check" aria-hidden="true">✓</span> Verified listings, made easier</span>
+          </div>
+          <div class="hero-proof">
+            <div class="proof-avatars" aria-hidden="true"><span>O</span><span>A</span><span>M</span></div>
+            <div><strong>Good moves start here</strong><span>Homes for every next chapter</span></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img class="hero-image" src="<%= listings[0]?.image_url || 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1500&q=85' %>" alt="A bright, modern home with a welcoming living space" onerror="this.src='https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1500&q=85'" />
+          <div class="image-caption"><span class="caption-pin" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg></span><span><strong><%= listings[0]?.city || "Find your place" %></strong><small><%= listings[0]?.state || "Across Nigeria" %></small></span></div>
+          <div class="image-index"><span>01</span><span class="index-rule"></span><span>03</span></div>
+          <div class="hero-stamp" aria-hidden="true"><span>FIND</span><strong>your<br />place</strong><span>STAY AWHILE</span></div>
+        </div>
+      </section>
+
+      <section class="trust-strip" aria-label="Find N' Stay highlights">
+        <div class="trust-inner">
+          <div class="trust-item"><span class="trust-icon"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg></span><span><strong>Thoughtful homes</strong><small>Places worth coming home to</small></span></div>
+          <div class="trust-item"><span class="trust-icon"><svg viewBox="0 0 24 24"><path d="M12 21s8-4.4 8-11V5l-8-3-8 3v5c0 6.6 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg></span><span><strong>Verified listings</strong><small>More confidence in every search</small></span></div>
+          <div class="trust-item"><span class="trust-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6"/><path d="M15 7h4v4"/></svg></span><span><strong>Clear rental details</strong><small>Know what you're choosing</small></span></div>
+          <div class="trust-count"><strong><%= summary.properties.toLocaleString() %></strong><span>places to<br />make yours</span></div>
+        </div>
+      </section>
+
+      <section class="properties-section section-wrap" id="properties" aria-labelledby="properties-title">
+        <div class="section-heading">
+          <div><span class="eyebrow"><span class="eyebrow-line"></span> Selected for you</span><h2 id="properties-title">Highlights of the day<span class="heading-period">.</span></h2><p>Good spaces, thoughtfully listed. Your next chapter might be right here.</p></div>
+          <a class="text-link" href="#properties">View all homes <span aria-hidden="true">↗</span></a>
+        </div>
+        <% if (listings.length) { %>
+          <div class="property-grid">
+            <% listings.forEach((property, index) => { %>
+              <article class="property-card">
+                <div class="property-image-link">
+                  <a class="property-image-anchor" href="#account" aria-label="View <%= property.name %>"><img class="property-image" src="<%= property.image_url || 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80' %>" alt="<%= property.name %>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80'" /></a>
+                  <% if (index === 0) { %><span class="property-tag">Featured home</span><% } %>
+                  <button class="save-button" type="button" aria-label="Save <%= property.name %>" onclick="event.preventDefault(); this.classList.toggle('saved'); this.setAttribute('aria-pressed', this.classList.contains('saved'))"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.1-8.8 10.1-8.8 10.1S3.2 13.9 3.2 8.8a4.5 4.5 0 0 1 8.8-1.2 4.5 4.5 0 0 1 8.8 1.2Z"/></svg></button>
+                  <% if (property.image_count > 0) { %><span class="photo-count"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M7 5 8 3h8l1 2"/></svg> <%= property.image_count %> photos</span><% } %>
+                </div>
+                <div class="property-details">
+                  <div class="property-title-row"><h3><%= property.name %></h3><span class="rating"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg> New</span></div>
+                  <p class="property-location"><%= property.address_line %>, <%= property.city %></p>
+                  <div class="property-specs"><span><%= property.bedrooms %> bed</span><i></i><span><%= property.bathrooms %> bath</span><i></i><span>Unit <%= property.unit_number %></span></div>
+                  <div class="property-price"><strong>₦<%= Number(property.rent_amount).toLocaleString("en-NG") %></strong><span> / year</span><a href="#account" aria-label="Explore <%= property.name %>"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div>
+                </div>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="empty-state">
+            <span class="empty-icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-7h6v7"/></svg></span>
+            <h3><%= dataAvailable ? "No homes match that search just yet" : "Homes are taking a moment to load" %></h3>
+            <p><%= dataAvailable ? "Try a different location or widen your budget to see more places." : "Please check back shortly while we reconnect to our listings." %></p>
+            <% if (filters.location || filters.propertyType || filters.maxPrice) { %><a class="button button-outline" href="/">Clear search</a><% } %>
+          </div>
+        <% } %>
+      </section>
+
+      <section class="about-band" id="about">
+        <div class="about-inner section-wrap">
+          <div class="about-mark" aria-hidden="true"><span>F</span><span>N</span><span>S</span></div>
+          <div class="about-copy"><span class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> A little more considered</span><h2>Finding a home should feel like a beginning.</h2><p>From the first search to the moment you turn the key, we're here to make the important details feel a little simpler.</p></div>
+          <a class="button button-light" href="#properties">Find your next home <span aria-hidden="true">↗</span></a>
+          <div class="about-orbit orbit-one" aria-hidden="true"></div><div class="about-orbit orbit-two" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="account-section section-wrap" id="account">
+        <div><span class="eyebrow"><span class="eyebrow-line"></span> Make a move</span><h2>Where will your next chapter take you?</h2></div>
+        <div class="account-choices"><a href="#properties">I'm looking for a home <span aria-hidden="true">↗</span></a><a href="mailto:hello@findnstay.com">I'm listing a property <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-main section-wrap">
+        <div class="footer-brand-block"><a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m4 14 12-10 12 10v13H6V14"/><path d="M13 27v-9h6v9M4 14h24"/></svg></span><span>Find <span class="brand-amp">N'</span> Stay</span></a><p>Better places. Better moves.<br />A little more like home.</p></div>
+        <div class="footer-column"><h3>Explore</h3><a href="#properties">Find a home</a><a href="#properties">Featured properties</a><a href="#about">Our approach</a></div>
+        <div class="footer-column"><h3>For owners</h3><a href="#account">List your property</a><a href="mailto:hello@findnstay.com">Property support</a><a href="#account">Owner enquiries</a></div>
+        <div class="footer-column"><h3>We're here to help</h3><a href="mailto:hello@findnstay.com">Contact & support</a><a href="#about">Rental guidelines</a><a href="mailto:hello@findnstay.com">hello@findnstay.com</a></div>
+      </div>
+      <div class="footer-bottom section-wrap"><span>© <%= new Date().getFullYear() %> Find N' Stay. Made for the next move.</span><div><a href="#about">Privacy</a><a href="#about">Terms</a><span class="footer-location"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg> Nigeria</span></div></div>
+    </footer>
+
+    <nav class="mobile-bottom-nav" aria-label="Quick navigation">
+      <a class="mobile-nav-item current" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-7h6v7"/></svg><span>Home</span></a>
+      <a class="mobile-nav-item" href="#properties"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg><span>Explore</span></a>
+      <a class="mobile-nav-item" href="#about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s8-4.4 8-11V5l-8-3-8 3v5c0 6.6 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></svg><span>About</span></a>
+      <a class="mobile-nav-item" href="#account"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.1-5.5 7-5.5s6.4 1.9 7 5.5"/></svg><span>Me</span></a>
+    </nav>
+    <script>
+      const menuToggle = document.querySelector(".menu-toggle");
+      const navigation = document.querySelector(".main-navigation");
+      menuToggle.addEventListener("click", () => {
+        const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+        menuToggle.setAttribute("aria-expanded", String(!isOpen));
+        navigation.classList.toggle("navigation-open", !isOpen);
+      });
+    </script>
+  </body>
+</html>

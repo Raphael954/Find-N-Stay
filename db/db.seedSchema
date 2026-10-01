@@ -1,0 +1,426 @@
+```sql
+-- ============================================================
+-- RentFlow - Seed Data
+-- Neon PostgreSQL
+-- ============================================================
+-- Creates:
+--   1 landlord
+--   2 properties
+--   8 units total
+--   6 amenities
+--   3 amenities per property
+--   property images
+--
+-- Run this AFTER schema.sql
+-- ============================================================
+
+BEGIN;
+
+-- ============================================================
+-- 1. LANDLORD
+-- ============================================================
+
+INSERT INTO users (
+    first_name,
+    last_name,
+    email,
+    password_hash,
+    phone,
+    role,
+    is_verified,
+    is_active
+)
+VALUES (
+    'Chinedu',
+    'Okafor',
+    'chinedu.okafor@example.com',
+    crypt('RentFlow@123', gen_salt('bf')),
+    '+2348012345678',
+    'landlord',
+    TRUE,
+    TRUE
+)
+ON CONFLICT (email) DO NOTHING;
+
+
+-- ============================================================
+-- 2. AMENITIES
+-- ============================================================
+
+INSERT INTO amenities (name)
+VALUES
+    ('24/7 Security'),
+    ('Parking Space'),
+    ('Swimming Pool'),
+    ('Backup Generator'),
+    ('CCTV Surveillance'),
+    ('Gym')
+ON CONFLICT (name) DO NOTHING;
+
+
+-- ============================================================
+-- 3. PROPERTY 1
+-- ============================================================
+
+INSERT INTO properties (
+    landlord_id,
+    name,
+    description,
+    property_type,
+    address_line,
+    city,
+    state,
+    country,
+    latitude,
+    longitude,
+    is_verified,
+    is_active
+)
+SELECT
+    id,
+    'Palmview Residences',
+    'A modern residential apartment complex located in Lekki Phase 1, Lagos.',
+    'apartment',
+    '12 Palmview Street, Lekki Phase 1',
+    'Lekki',
+    'Lagos',
+    'Nigeria',
+    6.4474,
+    3.4716,
+    TRUE,
+    TRUE
+FROM users
+WHERE email = 'chinedu.okafor@example.com'
+ON CONFLICT DO NOTHING;
+
+
+-- ============================================================
+-- 4. PROPERTY 2
+-- ============================================================
+
+INSERT INTO properties (
+    landlord_id,
+    name,
+    description,
+    property_type,
+    address_line,
+    city,
+    state,
+    country,
+    latitude,
+    longitude,
+    is_verified,
+    is_active
+)
+SELECT
+    id,
+    'Garden City Heights',
+    'A spacious apartment complex located in GRA Phase 2, Port Harcourt.',
+    'apartment',
+    '25 Garden City Avenue, GRA Phase 2',
+    'Port Harcourt',
+    'Rivers',
+    'Nigeria',
+    4.8156,
+    7.0498,
+    TRUE,
+    TRUE
+FROM users
+WHERE email = 'chinedu.okafor@example.com'
+ON CONFLICT DO NOTHING;
+
+
+-- ============================================================
+-- 5. UNITS FOR PALMVIEW RESIDENCES
+-- ============================================================
+
+INSERT INTO units (
+    property_id,
+    unit_number,
+    bedrooms,
+    bathrooms,
+    rent_amount,
+    security_deposit,
+    status,
+    description
+)
+SELECT
+    p.id,
+    unit_data.unit_number,
+    unit_data.bedrooms,
+    unit_data.bathrooms,
+    unit_data.rent_amount,
+    unit_data.security_deposit,
+    'available',
+    unit_data.description
+FROM properties p
+CROSS JOIN (
+    VALUES
+        (
+            'A101',
+            2,
+            2,
+            2500000.00,
+            500000.00,
+            'Two-bedroom apartment with modern finishes.'
+        ),
+        (
+            'A102',
+            2,
+            2,
+            2700000.00,
+            500000.00,
+            'Spacious two-bedroom apartment with balcony.'
+        ),
+        (
+            'A103',
+            3,
+            3,
+            3500000.00,
+            700000.00,
+            'Three-bedroom apartment suitable for a family.'
+        )
+) AS unit_data(
+    unit_number,
+    bedrooms,
+    bathrooms,
+    rent_amount,
+    security_deposit,
+    description
+)
+WHERE p.name = 'Palmview Residences'
+ON CONFLICT (property_id, unit_number) DO NOTHING;
+
+
+-- ============================================================
+-- 6. UNITS FOR GARDEN CITY HEIGHTS
+-- ============================================================
+
+INSERT INTO units (
+    property_id,
+    unit_number,
+    bedrooms,
+    bathrooms,
+    rent_amount,
+    security_deposit,
+    status,
+    description
+)
+SELECT
+    p.id,
+    unit_data.unit_number,
+    unit_data.bedrooms,
+    unit_data.bathrooms,
+    unit_data.rent_amount,
+    unit_data.security_deposit,
+    'available',
+    unit_data.description
+FROM properties p
+CROSS JOIN (
+    VALUES
+        (
+            'B101',
+            1,
+            1,
+            1500000.00,
+            300000.00,
+            'Compact one-bedroom apartment.'
+        ),
+        (
+            'B102',
+            2,
+            2,
+            2000000.00,
+            400000.00,
+            'Modern two-bedroom apartment.'
+        ),
+        (
+            'B103',
+            2,
+            2,
+            2100000.00,
+            400000.00,
+            'Two-bedroom apartment with spacious living area.'
+        ),
+        (
+            'B104',
+            3,
+            3,
+            2800000.00,
+            500000.00,
+            'Three-bedroom apartment with additional storage.'
+        ),
+        (
+            'B105',
+            3,
+            3,
+            3000000.00,
+            500000.00,
+            'Large three-bedroom apartment with balcony.'
+        )
+) AS unit_data(
+    unit_number,
+    bedrooms,
+    bathrooms,
+    rent_amount,
+    security_deposit,
+    description
+)
+WHERE p.name = 'Garden City Heights'
+ON CONFLICT (property_id, unit_number) DO NOTHING;
+
+
+-- ============================================================
+-- 7. AMENITIES FOR PALMVIEW RESIDENCES
+-- ============================================================
+
+INSERT INTO property_amenities (
+    property_id,
+    amenity_id
+)
+SELECT
+    p.id,
+    a.id
+FROM properties p
+CROSS JOIN amenities a
+WHERE p.name = 'Palmview Residences'
+AND a.name IN (
+    '24/7 Security',
+    'Parking Space',
+    'Swimming Pool'
+)
+ON CONFLICT DO NOTHING;
+
+
+-- ============================================================
+-- 8. AMENITIES FOR GARDEN CITY HEIGHTS
+-- ============================================================
+
+INSERT INTO property_amenities (
+    property_id,
+    amenity_id
+)
+SELECT
+    p.id,
+    a.id
+FROM properties p
+CROSS JOIN amenities a
+WHERE p.name = 'Garden City Heights'
+AND a.name IN (
+    '24/7 Security',
+    'Backup Generator',
+    'CCTV Surveillance'
+)
+ON CONFLICT DO NOTHING;
+
+
+-- ============================================================
+-- 9. PROPERTY IMAGES
+-- ============================================================
+-- These are placeholder Unsplash image URLs.
+-- Later, replace them with Cloudinary URLs when implementing
+-- the actual image upload system.
+
+INSERT INTO property_images (
+    property_id,
+    image_url,
+    public_id,
+    is_primary
+)
+SELECT
+    p.id,
+    image_data.image_url,
+    image_data.public_id,
+    image_data.is_primary
+FROM properties p
+CROSS JOIN (
+    VALUES
+        (
+            'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d',
+            'seed_palmview_1',
+            TRUE
+        ),
+        (
+            'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea',
+            'seed_palmview_2',
+            FALSE
+        ),
+        (
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
+            'seed_palmview_3',
+            FALSE
+        )
+) AS image_data(
+    image_url,
+    public_id,
+    is_primary
+)
+WHERE p.name = 'Palmview Residences';
+
+
+INSERT INTO property_images (
+    property_id,
+    image_url,
+    public_id,
+    is_primary
+)
+SELECT
+    p.id,
+    image_data.image_url,
+    image_data.public_id,
+    image_data.is_primary
+FROM properties p
+CROSS JOIN (
+    VALUES
+        (
+            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c',
+            'seed_garden_city_1',
+            TRUE
+        ),
+        (
+            'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0',
+            'seed_garden_city_2',
+            FALSE
+        ),
+        (
+            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3',
+            'seed_garden_city_3',
+            FALSE
+        )
+) AS image_data(
+    image_url,
+    public_id,
+    is_primary
+)
+WHERE p.name = 'Garden City Heights';
+
+
+-- ============================================================
+-- FINISH
+-- ============================================================
+
+COMMIT;
+```
+
+### What this gives you
+
+| Data                   |         Amount |
+| ---------------------- | -------------: |
+| Landlords              |              1 |
+| Properties             |              2 |
+| Palmview units         |              3 |
+| Garden City units      |              5 |
+| Total units            |          **8** |
+| Amenities              |              6 |
+| Amenities per property |          **3** |
+| Property images        |              6 |
+| States                 | Lagos + Rivers |
+
+**Login for the seeded landlord:**
+
+* Email: `chinedu.okafor@example.com`
+* Password: `RentFlow@123`
+
+The password is hashed **inside PostgreSQL using `pgcrypto`**, so the plaintext password isn't stored in the database.
+
+One important change from the earlier version: this seed doesn't rely on manually typed UUIDs. It looks up the landlord/property/amenity records by their stable values and lets Neon generate the UUIDs. That makes it much safer to run against your actual Neon database.
